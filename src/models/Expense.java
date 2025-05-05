@@ -1,35 +1,24 @@
 package src.models;
 
 public class Expense {
-    private double amount;
-    private String category;
     private String description;
+    private double amount;
 
-    public Expense(double amount, String category, String description) {
-        this.amount = amount;
-        this.category = category;
+    public Expense(String description, double amount) {
         this.description = description;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getCategory() {
-        return category;
+        this.amount = amount;
     }
 
     public String getDescription() {
         return description;
     }
 
-    @Override
-    public String toString() {
-        return amount + "," + category + "," + description;
+    public double getAmount() {
+        return amount;
     }
 
-    public static Expense fromString(String line) {
-        String[] parts = line.split(",", 3);
-        return new Expense(Double.parseDouble(parts[0]), parts[1], parts[2]);
+    @Override
+    public String toString() {
+        return "Expense: " + description + ", Amount: " + amount;
     }
 }

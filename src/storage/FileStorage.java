@@ -7,35 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileStorage {
-    private final String filename;
-
-    public FileStorage(String filename) {
-        this.filename = filename;
-    }
-
-    public void saveExpense(Expense expense) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
-            bw.write(expense.toString());
-            bw.newLine();
-        } catch (IOException e) {
-            System.out.println("Error writing to file.");
-        }
-    }
+    private static final String FILE_PATH = "expenses.txt";
 
     public List<Expense> loadExpenses() {
-        List<Expense> list = new ArrayList<>();
-        File file = new File(filename);
-        if (!file.exists()) return list;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                list.add(Expense.fromString(line));
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading file.");
+        List<Expense> expenses = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
+            expenses = (List<Expense>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No previous expenses found, starting fresh.");
         }
+        return expenses;
+    }
 
-        return list;
+    public void saveExpenses(List<Expense> expenses) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
+            oos.writeObject(expenses);
+        } catch (IOException e) {
+            System.out.println("Error saving expenses.");
+        }
     }
 }

@@ -2,38 +2,41 @@ package src.services;
 
 import src.models.Expense;
 import src.storage.FileStorage;
-import src.utils.InputHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseManager {
-    private final FileStorage storage = new FileStorage("expenses.txt");
+    private List<Expense> expenses;
+    private FileStorage storage;
 
-    public void addExpenseCLI() {
-        double amount = InputHelper.readDouble("Enter amount: ");
-        String category = InputHelper.readString("Enter category: ");
-        String desc = InputHelper.readString("Enter description: ");
+    public ExpenseManager() {
+        this.expenses = new ArrayList<>();
+        this.storage = new FileStorage();
+        this.expenses = storage.loadExpenses();
+    }
 
-        Expense expense = new Expense(amount, category, desc);
-        storage.saveExpense(expense);
-        System.out.println("Expense added.");
+    public void addExpense(Expense expense) {
+        expenses.add(expense);
+        storage.saveExpenses(expenses);
+        System.out.println("Expense added successfully.");
     }
 
     public void viewExpenses() {
-        List<Expense> expenses = storage.loadExpenses();
         if (expenses.isEmpty()) {
-            System.out.println("No expenses recorded.");
+            System.out.println("No expenses found.");
         } else {
-            System.out.println("\n--- Expense List ---");
-            for (Expense e : expenses) {
-                System.out.println("₹" + e.getAmount() + " | " + e.getCategory() + " | " + e.getDescription());
+            for (Expense expense : expenses) {
+                System.out.println(expense);
             }
         }
     }
 
-    public void viewTotal() {
-        List<Expense> expenses = storage.loadExpenses();
-        double total = expenses.stream().mapToDouble(Expense::getAmount).sum();
-        System.out.println("Total Expenses: ₹" + total);
+    public double calculateTotal() {
+        double total = 0;
+        for (Expense expense : expenses) {
+            total += expense.getAmount();
+        }
+        return total;
     }
 }

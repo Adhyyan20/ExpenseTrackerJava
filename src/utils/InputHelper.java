@@ -7,18 +7,16 @@ public class InputHelper {
 
     public static int readInt(String prompt) {
         System.out.print(prompt);
+        while (!scanner.hasNextInt()) {
+            System.out.println("Please enter a valid number.");
+            scanner.next();
+        }
         return scanner.nextInt();
     }
 
-    public static double readDouble(String prompt) {
+    public static String readLine(String prompt) {
         System.out.print(prompt);
-        return scanner.nextDouble();
-    }
-
-    public static String readString(String prompt) {
-        System.out.print(prompt);
-        scanner.nextLine(); // flush newline
+        scanner.nextLine(); // consume newline if needed
         return scanner.nextLine();
     }
 }
-
